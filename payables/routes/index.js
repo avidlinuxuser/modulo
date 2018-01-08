@@ -10,4 +10,8 @@ router.get( '/vendors', ( req, res ) => {
 	res.json( PayablesAPI.getVendors() );
 });
 
+router.get( '/vendor/:id', ( req, res ) => {
+	res.render( 'payables/vendor-page', { vendor: PayablesAPI.getVendors()[0] } );	
+});
+
 module.exports = router;

@@ -30,6 +30,18 @@ Module.prototype.attach = function() {
 		Logger.log( `Adding static resource ${uri}` );	
 		this.app.use( uri, express.static( resourcePath ) );
 	}
+
+	if( this.view_directory ) {
+		var currentViews = this.app.views;
+		if( !currentViews ){
+			currentViews = [];
+		} else if( typeof currentViews === 'string' ) {
+			currentViews = [ currentViews ];
+		}
+
+		currentViews.push( modulePATH( this, this.view_directory ) );
+		this.app.set('views', currentViews);
+	}
 }
 
 Module.prototype.addRoute = function( uri, action ) {
@@ -39,6 +51,10 @@ Module.prototype.addRoute = function( uri, action ) {
 Module.prototype.addResource = function( uri, res ) {
 	this.resources.push( { uri: uri, resource: res } );
 } 
+
+Module.prototype.setViewDirectory = function( view_directory ) {
+	this.view_directory = view_directory;
+}
 
 Module.prototype.setRoot = function( root ) {
 	this.root = root;

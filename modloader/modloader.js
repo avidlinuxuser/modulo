@@ -44,6 +44,10 @@ function CreateModule( app, directory, settings ) {
 			module.addResource( settings.resources[i].uri, settings.resources[i].path );
 		}
 	}
+
+	if( settings.view_directory ) {
+		module.setViewDirectory( settings.view_directory );
+	}
 	
 	module.description = settings.description;
 

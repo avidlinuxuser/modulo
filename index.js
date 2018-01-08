@@ -3,6 +3,9 @@ const ModLoader = require( './modloader/modloader' );
 const app = express();
 const Logger = require( './log/logbuddy' );
 
+app.set('view engine', 'ejs' );
+
+Logger.setLogFile( 'modulo.log' );
 Logger.environment( 'debug' );
 
 var mod_loader =  new ModLoader( app );

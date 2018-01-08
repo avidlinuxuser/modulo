@@ -3,6 +3,7 @@
 		"uri":"",
 		"path":"routes"
 	}],
+	"view_directory":"views",
 	"description":"Module for Accounts Payable",
 	"active":true
 }

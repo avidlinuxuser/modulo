@@ -2,6 +2,11 @@ const Promise = require( 'bluebird' );
 const fs = Promise.promisifyAll( require( 'fs' ) );
 const stackTrace = require( 'stack-trace' );
 const moment = require( 'moment' );
+const os = require( 'os' );
+
+function Line( message ) {
+	return message + os.EOL;
+}
 
 function ConsoleLog( type, message, callback ) {
 	try {
@@ -57,7 +62,7 @@ Logger.prototype.log = function( message ) {
 	message = PrepareMessage( 'DEBUG', message );
 	if( this.getLogLevel() <= Logger.LogLevelInfo ) {
 		if( this.logFile ) {
-			return fs.writeFile( this.logFile, message );
+			return fs.appendFileAsync( this.logFile, Line( message ) );
 		} else {
 			return ConsoleLogAsync( 'log', message );
 		}
@@ -70,7 +75,7 @@ Logger.prototype.info = function( message ) {
 	message = PrepareMessage( 'WARNING', message );
 	if( this.getLogLevel() <= Logger.LogLevelWarn ) {
 		if( this.logFile ) {
-			return fs.writeFile( this.logFile, message );
+			return fs.appendFileAsync( this.logFile, Line( message ) );
 		} else {
 			return ConsoleLogAsync( 'info', message );
 		}
@@ -83,7 +88,7 @@ Logger.prototype.error = function( message ) {
 	message = PrepareMessage( 'ERROR', message );
 	if( this.getLogLevel() <= Logger.LogLevelFatal ) {
 		if( this.logFile ) {
-			return fs.writeFile( this.logFile, message );
+			return fs.appendFileAsync( this.logFile, Line( message ) );
 		} else {
 			return ConsoleLogAsync( 'info', message );
 		}
