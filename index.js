@@ -13,5 +13,5 @@ mod_loader.scan().then( (loader) => {
 		console.log( 'Started app' );
 	});
 }).catch( (err) => {
-	Logger.log( err );
+	Logger.error( err );
 });
