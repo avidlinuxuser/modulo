@@ -10,7 +10,7 @@ mod_loader.scan().then( (loader) => {
 	return 0;
 }).then( () => {
 	app.listen( 3000, () => {
-		console.log( 'Started app' );
+		Logger.log( 'Started app' );
 	});
 }).catch( (err) => {
 	Logger.error( err );
