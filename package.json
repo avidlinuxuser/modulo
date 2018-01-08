@@ -1,0 +1,23 @@
+{
+  "name": "modulo",
+  "version": "1.0.0",
+  "description": "To Be determined",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avidlinuxuser/modulo.git"
+  },
+  "author": "",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/avidlinuxuser/modulo/issues"
+  },
+  "homepage": "https://github.com/avidlinuxuser/modulo#readme",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "express": "^4.16.2"
+  }
+}

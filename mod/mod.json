@@ -1,0 +1,9 @@
+{
+	"description":"Test mod",
+	"impl":"mod",
+	"resources":[{
+		"path":"public/html",
+		"uri":"web"
+	}],
+	"active": true
+}
