@@ -1,0 +1,8 @@
+{
+	"routers":[{
+		"uri":"",
+		"path":"routes"
+	}],
+	"description":"Module for Accounts Payable",
+	"active":true
+}

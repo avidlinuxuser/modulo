@@ -3,6 +3,8 @@ const ModLoader = require( './modloader/modloader' );
 const app = express();
 const Logger = require( './log/logbuddy' );
 
+Logger.environment( 'debug' );
+
 var mod_loader =  new ModLoader( app );
 
 mod_loader.scan().then( (loader) => {

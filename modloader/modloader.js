@@ -19,19 +19,23 @@ ModuleImplementor = ( file ) => {
 }
 
 ModulePath = ( directory, mod_impl ) => {
-	return Canonicalize( directory ) + ModuleImplementor( mod_impl );	
+	if( mod_impl ) {
+		return Canonicalize( directory ) + ModuleImplementor( mod_impl );	
+	} else {
+		return '../mod/mod';
+	}
 }
 
 function CreateModule( app, directory, settings ) {
-	Logger.log( `Loading module ${directory}. Description: settings.description` );	
+	Logger.log( `Loading module ${directory}. Description: ${settings.description}` );	
 	const Module = require( ModulePath( directory, settings.impl ) );	
 	var module = new Module( app );
 	module.setRoot( directory );
 
 	if( settings.routers ) {
 		for( var i = 0; i < settings.routers.length; ++i ) {
-			const Router = require( directory + '/' + settings.routers[i].path );
-			module.addRoute( settings.routers[i].uri, new Router() );
+			const router = require( ModulePath( directory, settings.routers[i].path ) );
+			module.addRoute( settings.routers[i].uri, router );
 		}	
 	}
 
@@ -67,7 +71,7 @@ ModuleLoader.prototype.scan = function(){
 			return self.load( directory );
 		});
 	}).then( (modules) => {
-		Logger.log( modules  );	
+		Logger.log( JSON.stringify( modules )  );	
 		self.modules = modules;
 		return self;
 	});
