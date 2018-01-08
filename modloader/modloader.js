@@ -75,7 +75,9 @@ ModuleLoader.prototype.scan = function(){
 
 ModuleLoader.prototype.initializeModules = function(){
 	for( var i = 0;i < this.modules.length; ++i ) {
-		this.modules[i].attach();
+		if( this.modules[i] ) {
+			this.modules[i].attach();
+		}
 	}
 }
 
