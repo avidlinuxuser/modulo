@@ -1,6 +1,10 @@
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll( require('fs') );
 const Logger = require( '../log/logbuddy' );
+const BASE_MODULE_LOCATION = '../mod/mod';
+
+//Using no js file name as require will assume index.js when no file specified
+const PACKAGE_INDEX = ''; 
 
 Canonicalize = ( file ) => {
 	if( file ) {
@@ -14,7 +18,7 @@ ModuleImplementor = ( file ) => {
 	if( file ) {
 		return '/' + file.replace( '.js', '' );
 	} else {
-		return '';
+		return PACKAGE_INDEX;
 	}
 }
 
@@ -22,7 +26,7 @@ ModulePath = ( directory, mod_impl ) => {
 	if( mod_impl ) {
 		return Canonicalize( directory ) + ModuleImplementor( mod_impl );	
 	} else {
-		return '../mod/mod';
+		return BASE_MODULE_LOCATION;
 	}
 }
 
