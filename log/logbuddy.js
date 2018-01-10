@@ -4,11 +4,13 @@ const stackTrace = require( 'stack-trace' );
 const moment = require( 'moment' );
 const os = require( 'os' );
 
-function Line( message ) {
+/* Private API Functions */
+
+function _Line( message ) {
 	return message + os.EOL;
 }
 
-function ConsoleLog( type, message, callback ) {
+function _ConsoleLog( type, message, callback ) {
 	try {
 		console[type]( message );
 		callback( null, null );
@@ -17,24 +19,37 @@ function ConsoleLog( type, message, callback ) {
 	}
 }
 
-function DoNothing( callback ){
+function _DoNothing( callback ){
 	callback( null, null );
 }
 
-function PrepareMessage( type, message ) {
+function _PrepareMessage( type, showStack, message ) {
 	var time = moment().format( 'DD/MMM/YYYY h:mm:ss a' );
 	var currentTrace = stackTrace.get();
-	return type + ' - ' + time + ' - ' + message + ' from ' + currentTrace[2].getFileName() + ' in function ' + currentTrace[2].getFunctionName(); 	
+	var message = type + ' - ' + time + ' - ' + message;
+	if( showStack ) {
+		message += ' from ' + currentTrace[2].getFileName() + ' in function ' + currentTrace[2].getFunctionName(); 	
+	}
+	return message;
 }
 
-const ConsoleLogAsync = Promise.promisify( ConsoleLog );
-const DoNothingAsync = Promise.promisify( DoNothing );
+const _ConsoleLogAsync = Promise.promisify( _ConsoleLog );
+const _DoNothingAsync = Promise.promisify( _DoNothing );
 
-
+/* Public API */
 function Logger() {
 	this.logFile = null;
 	this.environment( 'production' );
+	for( var x in Logger ) {
+		this[x] = Logger[x];
+	}
 }
+
+Logger.LogLevelAny = -1;
+Logger.LogLevelInfo = 0;
+Logger.LogLevelWarn = 1;
+Logger.LogLevelFatal = 2;
+Logger.LogLevelNone = 3;
 
 Logger.prototype.setLogFile = function( path ) {
 	this.logFile = path;
@@ -59,47 +74,33 @@ Logger.prototype.environment = function( mode ) {
 }
 
 Logger.prototype.log = function( message ) {
-	message = PrepareMessage( 'DEBUG', message );
-	if( this.getLogLevel() <= Logger.LogLevelInfo ) {
-		if( this.logFile ) {
-			return fs.appendFileAsync( this.logFile, Line( message ) );
-		} else {
-			return ConsoleLogAsync( 'log', message );
-		}
-	} else {
-		return DoNothingAsync();
-	}
+	return this.message( 'log', Logger.LogLevelInfo, 'DEBUG', message );
 }
 
 Logger.prototype.info = function( message ) {
-	message = PrepareMessage( 'WARNING', message );
-	if( this.getLogLevel() <= Logger.LogLevelWarn ) {
-		if( this.logFile ) {
-			return fs.appendFileAsync( this.logFile, Line( message ) );
-		} else {
-			return ConsoleLogAsync( 'info', message );
-		}
-	} else {
-		return DoNothingAsync();
-	}
+	return this.message( 'info', Logger.LogLevelWarn, 'WARNING', message );
 }
 
 Logger.prototype.error = function( message ) {
-	message = PrepareMessage( 'ERROR', message );
-	if( this.getLogLevel() <= Logger.LogLevelFatal ) {
+	return this.message( 'error', Logger.LogLevelFatal, 'ERROR', message );
+}
+
+Logger.prototype.message = function( type, level, label, message ) {
+	var showStack = true;
+	if( level == Logger.LogLevelAny || this.getLogLevel() <= level ) {
+		if( level == Logger.LogLevelAny ) {
+			showStack = false;
+		}
+		message = _PrepareMessage( label, showStack, message );	
 		if( this.logFile ) {
-			return fs.appendFileAsync( this.logFile, Line( message ) );
+			return fs.appendFileAsync( this.logFile, _Line( message ) );
 		} else {
-			return ConsoleLogAsync( 'info', message );
+			return _ConsoleLogAsync( type, message );
 		}
 	} else {
-		return DoNothingAsync();
+		return _DoNothingAsync();
 	}
 }
 
-Logger.LogLevelInfo = 0;
-Logger.LogLevelWarn = 1;
-Logger.LogLevelFatal = 2;
-Logger.LogLevelNone = 3;
 
 module.exports = new Logger();

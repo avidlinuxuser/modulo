@@ -86,11 +86,11 @@ ModuleLoader.prototype.scan = function(){
 }
 
 ModuleLoader.prototype.initializeModules = function(){
-	for( var i = 0;i < this.modules.length; ++i ) {
-		if( this.modules[i] ) {
-			this.modules[i].attach();
+	return Promise.map( this.modules, ( module ) => {
+		if( module ) {
+			return module.attach();		
 		}
-	}
+	});
 }
 
 ModuleLoader.prototype.load = function( directory ){
